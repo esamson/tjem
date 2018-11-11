@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <timestamp key="startTime" datePattern="yyyyMMdd'T'HHmmssSSS"/>
+
+    <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.err</target>
+        <encoder>
+            <pattern>%r [%thread][%.-1level] %logger{1} %msg%n</pattern>
+        </encoder>
+    </appender>
+    <if condition='!isNull("DEVLOG")'>
+        <then>
+            <appender name="DEVLOG" class="ch.qos.logback.core.FileAppender">
+                <file>${logdir:-/tmp}/dev-${startTime}.log</file>
+                <encoder>
+                    <pattern>%d [%thread][%level] %logger %msg%n</pattern>
+                </encoder>
+            </appender>
+        </then>
+    </if>
+
+    <root>
+        <level value="warn"/>
+        <appender-ref ref="STDERR"/>
+        <if condition='!isNull("DEVLOG")'>
+            <then>
+                <appender-ref ref="DEVLOG"/>
+            </then>
+        </if>
+    </root>
+
+    <logger name="ph.samson">
+        <level value="${loglevel:-warn}"/>
+    </logger>
+</configuration>
